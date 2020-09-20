@@ -3,7 +3,7 @@
 // "0 0 * * * *" - every hour (GMT 0)
 
 var MODULE_NAME 		= "flood_manager";
-var MODULE_VERSION  = "v.1.5";
+var MODULE_VERSION  = "v.1.5.1";
 
 exports.start = function(config) {
 	if (!validateConfig(config)) return;
@@ -78,7 +78,7 @@ var validateConfig = function(_config) {
 function createDevice(config) {
 	var cells = {
 		enabled: 				{ type: "switch", value: true, readonly: false },
-		version: 				{ type: "text", value: MODULE_VERSION },
+		version: 				{ type: "text", 	value: MODULE_VERSION },
 		safe_rotation: 	{ type: "switch", value: true, readonly: false },
 		flood: 					{ type: "value", 	value: 0, readonly: false },
 		test_wet: 			{ type: "pushbutton", readonly: false },
@@ -110,7 +110,7 @@ function createRule_valve(device_id, device, control, activationValue) {
     whenChanged: device_id + "/valve",
     then: function (newValue, devName, cellName) {
 			var newState = (newValue) ? activationValue : !activationValue;
-      if (dev[device][control] !== newState) dev[device][control] = newState;
+      if (dev[device][control] != newState) dev[device][control] = !!newState;
     }
   });
 
@@ -119,7 +119,7 @@ function createRule_valve(device_id, device, control, activationValue) {
     whenChanged: device + "/" + control,
     then: function (newValue, devName, cellName) {
 			var newState = (newValue == activationValue);
-      if (dev[device_id]["valve"] !== newState) dev[device_id]["valve"] = newState;
+      if (dev[device_id]["valve"] != newState) dev[device_id]["valve"] = newState;
     }
   });
 }
